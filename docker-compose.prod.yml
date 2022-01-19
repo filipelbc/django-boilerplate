@@ -1,0 +1,36 @@
+services:
+  caddy:
+    image: lucaslorentz/caddy-docker-proxy
+    restart: unless-stopped
+    ports:
+      - 80:80
+      - 443:443
+    volumes:
+      - caddy_data:/data
+
+  postgres:
+    image: postgres:13
+    restart: unless-stopped
+    environment:
+      - POSTGRES_PASSWORD=__change__me__
+      - POSTGRES_USER=__change__me__
+      - POSTGRES_DB=__change__me__
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  webapp:
+    build: .
+    restart: unless-stopped
+    environment:
+      - POSTGRES_PASSWORD=__change__me__
+      - POSTGRES_USER=__change__me__
+      - POSTGRES_DB=__change__me__
+      - DJANGO_SECRET_KEY=__change__me__
+      - ENVIRONMENT=prod
+    labels:
+      caddy: webapp.my-domain.com
+      caddy.reverse_proxy: "{{upstreams 8000}}"
+
+volumes:
+  caddy_data: {}
+  postgres_data: {}

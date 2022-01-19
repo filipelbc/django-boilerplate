@@ -1,0 +1,42 @@
+#+TITLE: Django + PostgreSQL Boilerplate
+
+* Dependencies
+
+- Python 3.9
+- PostgreSQL 13
+- Docker & docker-compose
+
+* How to Run in Production
+
+#+begin_src shell
+docker-compose -f docker-compose.prod.yml up -d
+#+end_src
+
+* How to Develop
+
+1. Setup dependencies
+
+#+begin_src shell
+sudo apt install -y \
+    postgresql-client \
+    python3-pip \
+    python3-virtualenv
+
+python3 -m virtualenv venv
+. venv/bin/activate
+pip install -r requirements.txt
+#+end_src
+
+2. Run services
+
+#+begin_src shell
+docker-compose -f docker-compose.dev.yml up -d --force-recreate postgres
+
+. venv/bin/activate
+
+cd src/
+
+./manage.py migrate
+./manage.py test       # for running the unit tests
+./manage.py runserver  # for running the development server
+#+end_src

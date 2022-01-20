@@ -2,6 +2,7 @@ FROM debian:11
 
 RUN apt-get update -y \
     && apt-get install -y \
+        libpq-dev \
         postgresql-client \
         python3-pip \
     && rm -rf /var/lib/apt/lists/*

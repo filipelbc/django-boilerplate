@@ -1,0 +1,20 @@
+stages:
+  - test
+
+test:
+  stage: test
+  image: registry.gitlab.com/filipelbc/django-boilerplate/ci:latest
+  variables:
+    POSTGRES_DB: dbname
+    POSTGRES_USER: dbuser
+    POSTGRES_PASSWORD: dbpassword
+    POSTGRES_HOST_AUTH_METHOD: trust
+  services:
+    - name: registry.gitlab.com/filipelbc/django-boilerplate/postgres:latest
+      alias: postgres
+  script:
+    - cd src
+    - python3 ./manage.py check --deploy --fail-level ERROR
+    - python3 ./manage.py makemigrations --check
+    - python3 ./manage.py migrate
+    - python3 ./manage.py test
